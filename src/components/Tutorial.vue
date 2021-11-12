@@ -132,14 +132,8 @@ export default {
     },
 
     updatePublished(status) {
-      var data = {
-        id: this.currentTutorial._id,
-        title: this.currentTutorial.title,
-        description: this.currentTutorial.description,
-        published: status,
-      };
-
-      TutorialDataService.update(this.currentTutorial.id, data)
+      this.currentTutorial.published = status;
+      TutorialDataService.update(this.currentTutorial._id, this.currentTutorial)
         .then((response) => {
           this.currentTutorial.published = status;
           console.log(response.data);

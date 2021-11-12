@@ -22,14 +22,22 @@ export default {
         return {
             tutorials: [],
             prereqs:[],
+            pagesize: 999999999,
+            page: 0 
         };
     },
     methods: {
        retrieveTutorials() {
-           TutorialDataService.getAll()
+           const params = {
+               size: this.pagesize,
+               page: this.page
+           }
+           TutorialDataService.getAll(params)
            .then((response) => {
-               this.tutorials = response.data.map(this.getDisplayTutorial);
-               console.log (this.prereqs)
+                const { tutorials, totalPages } = response.data;
+                this.tutorials = tutorials.map(this.getDisplayTutorial);
+                this.totalPages = totalPages;
+                console.log (this.prereqs)
            })
            
            .catch((e) => {
