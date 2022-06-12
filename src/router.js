@@ -18,6 +18,11 @@ export default new Router({
       component: () => import("./components/Tutorial")
     },
     {
+      path: "/search/:param",
+      name: "searchview",
+      component: () => import("./components/SearchView")
+    },
+    {
       path: "/add",
       name: "add",
       component: () => import("./components/AddTutorial")
@@ -26,6 +31,11 @@ export default new Router({
       path: "/prereqs",
       name: "prereqs",
       component: () => import("./components/Prereqs")
+    },
+    {
+      path:"/guidelines",
+      name:"guidelines",
+      component: () => import("./components/Guidelines")
     }
   ]
 });

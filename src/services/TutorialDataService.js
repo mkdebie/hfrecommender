@@ -6,7 +6,7 @@ class TutorialDataService {
   }
 
   get(id) {
-    return http.get(`/tutorials/${id}`);
+    return http.get(`/tutorials/single/${id}`);
   }
 
   create(data) {
@@ -31,6 +31,15 @@ class TutorialDataService {
 
   getUnpublished(params) {
     return http.get(`/tutorials/unpublished`, { params})
+  }
+
+  getGuidelines() {
+    return http.get("/tutorials/guidelines")
+  }
+
+  getGuideline(id) {
+    console.log(id)
+    return http.get(`/tutorials/guideline?guideline=${id}`)
   }
 }
 

@@ -14,6 +14,10 @@
         PreReqs 
       </v-btn>
 
+      <v-btn to="/guidelines" small text>
+        Guidelineview
+      </v-btn>
+
     </v-app-bar>
 
     <v-main>

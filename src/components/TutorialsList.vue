@@ -185,7 +185,6 @@ export default {
       },
 
     editTutorial(id) {
-      console.log (id)
       this.$router.push({ name: "tutorial-details", params: { id: id } });
     },
 

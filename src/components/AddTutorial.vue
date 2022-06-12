@@ -64,7 +64,7 @@ export default {
     return {
       tutorial: {
         id: null,
-        guideline: "2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure: Developed by the Task Force for the diagnosis and treatment of acute and chronic heart failure of the European Society of Cardiology (ESC) With the special contribution of the Heart Failure Association (HFA) of the ESC ",
+        guideline: "2021 ESC/EACTS Guidelines for the management of valvular heart disease",
         table: "",
         recommendation: "",
         class: "",
