@@ -1,6 +1,9 @@
 <template>
-    <div>
-       <p class="headline">Guidelines</p>
+    <div class="gecentreerd">
+       <p class="headline">
+           <v-card elevation="2">
+               Guidelines
+           </v-card>
         <div v-if="guidelines">
            <li v-for="guideline in guidelines.data" :key="guideline._id">
                <div @click="goDeep(guideline._id)"> 
@@ -49,4 +52,8 @@ export default {
 }
 </script>
 <style>
+.gecentreerd {
+  margin: auto;
+  width: 80%;
+}
 </style>

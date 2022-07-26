@@ -1,9 +1,15 @@
 <template>
   <div class="submit-form mt-3 mx-auto">
-    <p class="headline">Add Tutorial</p>
+    <p class="headline">Add Recommendation</p>
 
     <div v-if="!submitted">
       <v-form ref="form" lazy-validation>
+        <v-text-field
+          v-model="tutorial.guideline"
+          :rules="[(v) => !!v || 'Guideline is required']"
+          label="Guideline"
+          required
+        ></v-text-field>
         <v-text-field
           v-model="tutorial.table"
           :rules="[(v) => !!v || 'Table is required']"
@@ -64,7 +70,7 @@ export default {
     return {
       tutorial: {
         id: null,
-        guideline: "2021 ESC/EACTS Guidelines for the management of valvular heart disease",
+        guideline: null,
         table: "",
         recommendation: "",
         class: "",
@@ -100,7 +106,7 @@ export default {
       this.submitted = false;
       this.tutorial =  {
         id: null,
-        guideline: "2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure: Developed by the Task Force for the diagnosis and treatment of acute and chronic heart failure of the European Society of Cardiology (ESC) With the special contribution of the Heart Failure Association (HFA) of the ESC ",
+        guideline: this.tutorial.guideline,
         table: this.tutorial.table,
         recommendation: "",
         class: "",

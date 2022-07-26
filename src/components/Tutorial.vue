@@ -61,7 +61,7 @@
             <v-card elevation="2" class="pa-2">
               List of prerequisites
               <li v-for="prereq in currentTutorial.prereq" :key="prereq.prereq">
-                {{prereq.key}} | {{prereq.val}}
+                {{prereq.key}} | {{prereq.val}} | <v-icon @click="changePrereq(prereq.key)">mdi-pencil </v-icon><v-icon @click="removePrereq(prereq.key)">mdi-delete</v-icon>
               </li>
             </v-card>
           </div>
@@ -107,7 +107,7 @@
         </v-col>
       </v-row>
     </v-form>
-      
+
     <div v-if="addSupportOf">
       <v-form ref="addSupportOfForm" lazy-validation>
         <v-text-field
@@ -152,7 +152,10 @@
 
     <p class="mt-3">{{ message }}</p>
    </v-card>
+
+         <v-btn color="primary" small class="mr-2" @click="goBack()" outlined>Back</v-btn>
   </div>
+  
   
   <div v-else>
     <p>Please click on a Tutorial...</p>
@@ -176,6 +179,7 @@ export default {
       newSupportOf: "",
       supportOfValue: "",
       supportOfType: "",
+      removedPrereq:"",
     };
   },
   methods: {
@@ -183,7 +187,6 @@ export default {
       TutorialDataService.get(id)
         .then((response) => {
           this.currentTutorial = response.data;
-          console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -232,14 +235,35 @@ export default {
       this.currentTutorial.prereq.push(this.newPrereq)
     },
 
+    removePrereq(prereq) {
+      const index = this.currentTutorial.prereq.map(object => object.key).indexOf(prereq)
+      this.removedPrereq = this.currentTutorial.prereq.splice(index,1);
+    },
+
+    changePrereq(prereq) {
+      const index = this.currentTutorial.prereq.map(object=>object.val).indexOf(prereq)
+      this.removedPrereq = this.currentTutorial.prereq.splice(index,1);
+      this.prereqVal = this.removedPrereq[0].val;
+      this.prereqKey = this.removedPrereq[0].key;
+      console.log (this.removedPrereq[0])
+      this.addPrereq = true;
+    },
+
     addNewSupportOf() {
       this.newSupportOf = {
         value: this.supportOfValue,
         type: this.supportOfType
       }
       this.currentTutorial.supportOf.push(this.newSupportOf)
+    },
+    
+    goBack() {
+    console.log("hallo")
+    this.$router.back();
     }
   },
+
+
   mounted() {
     this.message = "";
     this.getTutorial(this.$route.params.id);
