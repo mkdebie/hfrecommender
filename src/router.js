@@ -18,7 +18,7 @@ export default new Router({
       component: () => import("./components/Tutorial")
     },
     {
-      path: "/search/:param",
+      path: "/search/:param/:type",
       name: "searchview",
       component: () => import("./components/SearchView")
     },
@@ -26,6 +26,11 @@ export default new Router({
       path: "/add",
       name: "add",
       component: () => import("./components/AddTutorial")
+    },
+    {
+      path:"/supports",
+      name: "supports",
+      component: () => import("./components/Supports")
     },
     {
       path: "/prereqs",
@@ -36,6 +41,11 @@ export default new Router({
       path:"/guidelines",
       name:"guidelines",
       component: () => import("./components/Guidelines")
+    },
+    {
+      path:"/supportTest",
+      name:"supportTest",
+      component: () => import("./components/supportTest")
     }
   ]
 });

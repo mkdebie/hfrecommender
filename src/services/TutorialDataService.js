@@ -41,6 +41,27 @@ class TutorialDataService {
     console.log(id)
     return http.get(`/tutorials/guideline?guideline=${id}`)
   }
+
+  getPrereqAssociated (id) {
+    console.log (id)
+    return http.get(`/tutorials/prereqs/${id}`)
+  }
+
+  getPrereqMinKey () {
+    return http.get(`/tutorials/allPrereqMin`)
+  }
+
+  getSupports() {
+    return http.get(`/tutorials/supportOf`)
+  }
+
+  getSupportsMin() {
+    return http.get(`/tutorials/supportOfMin`)
+  }
+
+  getSupportsMinType () {
+    return http.get (`/tutorials/supportOfMinType`)
+  }
 }
 
 export default new TutorialDataService();

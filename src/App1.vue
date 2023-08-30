@@ -14,8 +14,16 @@
         PreReqs 
       </v-btn>
 
+      <v-btn to="/supports" small text>
+        Supports
+      </v-btn>
+
       <v-btn to="/guidelines" small text>
         Guidelineview
+      </v-btn>
+
+      <v-btn to="/supportTest" small text>
+        Decision Support
       </v-btn>
 
     </v-app-bar>

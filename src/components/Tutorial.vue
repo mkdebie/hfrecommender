@@ -52,7 +52,7 @@
             <v-card elevation="2" class="pa-2">
             Supports 
             <li v-for="support in currentTutorial.supportOf" :key="support.value">
-              {{support.value}}
+              {{support.value}} | {{ support.type }}
             </li>
             </v-card>
           </div>
@@ -74,6 +74,67 @@
           <v-divider class="my-5"></v-divider>
         </v-col>
       </v-row>
+    </v-form>
+
+    <div v-if="addSupportOf" class="pa-8">
+      <v-card>
+        <v-card-title>Information about what this receommendation supports</v-card-title>
+        <v-form ref="addSupportOfForm" lazy-validation>
+          <v-combobox
+          v-model="selectedItemSupportValue"
+          :items="filteredItemsSupportValue"
+          :search-input.sync="searchSupportValue"
+          label="What does this recommendation support ?"
+          @change="handleChangeSupportValue"
+          class="relative-combobox-width"
+          ></v-combobox>
+
+
+          <v-combobox
+            v-model="selectedItemSupportType"
+            :items="filteredItemsSupportType"
+            :search-input.sync="searchSupportType"
+            label="What type of Support is this ?"
+            @change="handleChangeSupportType"
+            class="relative-combobox-width"
+          ></v-combobox>
+        </v-form>
+        <v-card-actions class="pt-0">
+          <v-btn color="primary" @click="addNewSupportOf()" outlined small>
+          Add to list
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+
+    </div>
+
+      <div v-if="addPrereq" class="pa-8">
+        <v-card>
+        <v-card-title>Information about prerequisites for this recommendation</v-card-title>
+        <v-form ref="addPrereqForm" lazy-validation>
+          <v-combobox
+          v-model="selectedPrereqKey"
+          :items="filteredItemsPrereqKey"
+          :search-input.sync="searchPrereqKey"
+          label="Give Prereq"
+          @change="handleChangePrereqKey"
+          class="relative-combobox-width"
+          ></v-combobox>
+          <v-text-field
+          class="relative-combobox-width"
+            v-model="prereqVal"
+            :rules="[(v) => !!v || 'Value is required']"
+            label="Value"
+            required
+            ></v-text-field>
+        </v-form>
+        <v-card-actions class="pt-0">
+          <v-btn color="primary" @click="addPrerequisite()" outlined small>
+            Add to list
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+      </div>
       <v-row>
         <v-col cols="12" align="center">
           <v-btn v-if="currentTutorial.published"
@@ -106,51 +167,12 @@
           </v-btn>
         </v-col>
       </v-row>
-    </v-form>
 
-    <div v-if="addSupportOf">
-      <v-form ref="addSupportOfForm" lazy-validation>
-        <v-text-field
-          v-model="supportOfValue"
-          :rules="[(v) => !!v || 'Supports is required']"
-          label="Supports"
-          required
-          ></v-text-field>
-          <v-text-field
-          v-model="supportOfType"
-          :rules="[(v) => !!v || 'Value is required']"
-          label="Support Type"
-          required
-          ></v-text-field>
-
-          <v-btn color="primary" @click="addNewSupportOf()" outlined small>
-            Push
-          </v-btn>
-        </v-form>
-    </div>
-
-      <div v-if="addPrereq">
-        <v-form ref="prereqform" lazy-validation>
-        <v-text-field
-          v-model="prereqKey"
-          :rules="[(v) => !!v || 'Prerequisite is required']"
-          label="Prerequisite"
-          required
-          ></v-text-field>
-          <v-text-field
-          v-model="prereqVal"
-          :rules="[(v) => !!v || 'Value is required']"
-          label="Value"
-          required
-          ></v-text-field>
-
-          <v-btn color="primary" @click="addPrerequisite()" outlined small>
-            Push
-          </v-btn>
-        </v-form>
-      </div>
-
-    <p class="mt-3">{{ message }}</p>
+      <div class="pa-8">
+        <v-alert v-if="showAlert" type="success" dismissible @input="dismissAlert">
+      {{message}}
+    </v-alert>
+  </div>
    </v-card>
 
          <v-btn color="primary" small class="mr-2" @click="goBack()" outlined>Back</v-btn>
@@ -170,7 +192,6 @@ export default {
   data() {
     return {
       currentTutorial: null,
-      message: "",
       addPrereq: false,
       addSupportOf: false,
       prereqVal: "",
@@ -180,6 +201,22 @@ export default {
       supportOfValue: "",
       supportOfType: "",
       removedPrereq:"",
+      // autocomplete variables
+      supports: [],
+      supportTypes: [],
+      prereqs: [],
+      selectedItemSupportValue: null,
+      selectedItemSupportType: null,
+      selectedPrereqKey: null,
+      searchSupportValue: "",
+      searchSupportType: "",
+      searchPrereqKey: "",
+      itemsSupportValue: [],
+      itemsSupportType: [],
+      itemsPrereqKey: [],
+      //
+      showAlert : false,
+      message: "",
     };
   },
   methods: {
@@ -190,8 +227,37 @@ export default {
         })
         .catch((e) => {
           console.log(e);
+        })
+      },
+    // Dit zou waarschijnlijk sneller kunnen met 1 call, ik laat het nu zo
+    retrieveSupports() {
+        TutorialDataService.getSupportsMin()
+        .then((response2) => {
+            this.itemsSupportValue = response2.data.data;
+        })
+        .catch((e) => {
+            console.log(e);
         });
+      },
+    retrieveSupportTypes() {
+      TutorialDataService.getSupportsMinType()
+      .then((response) => {
+        this.itemsSupportType = response.data.data;
+      })
+        .catch((e) => {
+          console.log(e);
+      });
     },
+    retrievePrereqKeys() {
+      TutorialDataService.getPrereqMinKey()
+      .then((response) => {
+        this.itemsPrereqKey = response.data.data;
+    })
+    .catch((e) => {
+          console.log(e);
+      });
+    },
+    
 
     updatePublished(status) {
       this.currentTutorial.published = status;
@@ -208,12 +274,12 @@ export default {
     updateTutorial() {
       TutorialDataService.update(this.currentTutorial._id, this.currentTutorial)
         .then((response) => {
-          console.log(response.data);
-          this.message = "The tutorial was updated successfully!";
+          this.message = response.data.message
         })
         .catch((e) => {
           console.log(e);
         });
+        this.showAlertfx();
     },
 
     deleteTutorial() {
@@ -236,6 +302,7 @@ export default {
     },
 
     removePrereq(prereq) {
+      console.log (prereq)
       const index = this.currentTutorial.prereq.map(object => object.key).indexOf(prereq)
       this.removedPrereq = this.currentTutorial.prereq.splice(index,1);
     },
@@ -258,15 +325,71 @@ export default {
     },
     
     goBack() {
-    console.log("hallo")
     this.$router.back();
-    }
+    },
+    handleChangePrereqKey(value) {
+      if (this.itemsPrereqKey.indexOf(value) === -1) {
+        this.itemsPrereqKey.push(value);
+      }
+      this.prereqKey= value
+    },
+
+    handleChangeSupportValue(value) {
+      if (this.itemsSupportValue.indexOf(value) === -1) {
+        this.itemsSupportValue.push(value);
+      }
+      this.supportOfValue = value
+    },
+    handleChangeSupportType(value) {
+      if (this.itemsSupportType.indexOf(value) === -1) {
+        this.itemsSupportType.push(value);
+      }
+      this.supportOfType = value
+    },
+    showAlertfx() {
+    this.showAlert = true;
+
+    setTimeout(() => {
+      this.dismissAlert();}, 3000)
+    },
+  
+    dismissAlert() {
+    this.showAlert = false;
+    },
   },
 
+
+  computed: {
+    filteredItemsSupportValue() {
+      const itemsSupportValue = [...this.itemsSupportValue];
+      if (this.searchSupportValue && this.itemsSupportValue.indexOf(this.search) === -1) {
+        itemsSupportValue.push(this.searchSupportValue);
+      }
+      return itemsSupportValue;
+    },
+    filteredItemsSupportType() {
+      const itemsSupportType = [...this.itemsSupportType];
+      if (this.searchSupportType && this.itemsSupportType.indexOf(this.search) === -1) {
+        itemsSupportType.push(this.searchSupportType);
+      }
+      return itemsSupportType;
+    },
+    filteredItemsPrereqKey() {
+    const itemsPrereqKey = [...this.itemsPrereqKey];
+    if (this.searchPrereqKey && this.itemsPrereqKey.indexOf(this.search) === -1) {
+      itemsPrereqKey.push(this.searchPrereqKey);
+    }
+
+      return itemsPrereqKey;
+    },
+  },
 
   mounted() {
     this.message = "";
     this.getTutorial(this.$route.params.id);
+    this.retrieveSupports();
+    this.retrieveSupportTypes();
+    this.retrievePrereqKeys();
   },
 };
 </script>
@@ -281,4 +404,11 @@ export default {
   margin: auto;
   width: 80%;
 }
+
+.relative-combobox-width {
+  width: 95%;
+  margin:auto;
+}
+
+
 </style>

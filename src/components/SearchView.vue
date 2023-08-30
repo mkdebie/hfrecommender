@@ -2,15 +2,19 @@
  <div class="gecentreerd">
    <v-card elevation="2">
      <v-card-title><span class="title">{{searchparam.id}}</span></v-card-title>
-     <v-card-subtitle>Table list ({{tutorials.length}})</v-card-subtitle>
+     <v-card-subtitle>Search type: {{searchparam.type}} Table list ({{tutorials.length}})</v-card-subtitle>
   </v-card><p>
 
 
         <div v-if="tutorials">
+          <p v-if="text">{{ text }}</p>
             <v-expansion-panels accordion>
                 <v-expansion-panel v-for="tutorial in tutorials" :key="tutorial._id">
                     <v-expansion-panel-header>
-                        {{tutorial._id}}
+                      <!-- Als je de hele recommendatie krijgt -->
+                      <p v-if="tutorial.recommendation">{{ tutorial.recommendation }}</p>  
+                      <!-- Als je een aggregratie krijgt  -->
+                      <p v-if="!tutorial.recommendation">{{tutorial._id}} <span class="small">{{ tutorial.details.length }}</span></p>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                       <v-list dense>
@@ -44,6 +48,7 @@ export default {
     return {
       searchparam:"",
       tutorials: [],
+      text:'',
     };
   },
 
@@ -63,15 +68,31 @@ export default {
         console.log(id);
         this.$router.push({ name: "tutorial-details", params: { id: id } });
   },
- },
+  getPrereqAssociations() {
+        TutorialDataService.getPrereqAssociated(this.searchparam.id)
+        .then((response) => {
+        this.tutorials = response.data.data;
+        })
+        .catch((e) => {
+        console.log(e);
+    });
+    }
+  },
 
  
   
   mounted() {
     this.searchparam = {
         id: this.$route.params.param,
+        type: this.$route.params.type
     }
-    this.getTutorials();
+    if (this.searchparam.type === "Guideline") {
+      this.getTutorials();
+    }
+
+    if (this.searchparam.type === "Prereqs") {
+      this.getPrereqAssociations();  
+    }
   },
 };
 </script>
@@ -87,5 +108,10 @@ text-overflow: ellipsis;
 .gecentreerd {
   margin: auto;
   width: 80%;
+}
+
+.small {
+  color: grey;
+  font-size: 10px;
 }
 </style>

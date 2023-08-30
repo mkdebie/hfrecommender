@@ -3,7 +3,7 @@
        <p class="headline">Overview of prerequisites</p>
        <div v-if="prereqs">
            <li v-for="prereq in prereqs" :key="prereq">
-               {{prereq}}
+               {{prereq}} <a @click="goDeep(prereq)">Click</a>
            </li>
        </div>
        <v-btn to="/tutorials" color="primary" small outlined>
@@ -67,6 +67,9 @@ export default {
                 status: tutorial.published ? "Published" : "Pending",
             };
         },
+        goDeep(id) {
+        this.$router.push({ name: "searchview", params: { param: id, type: "Prereqs" } });
+       },
     },
     mounted() {
         this.retrieveTutorials();
